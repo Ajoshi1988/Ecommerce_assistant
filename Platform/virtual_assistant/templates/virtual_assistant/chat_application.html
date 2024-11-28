@@ -1,0 +1,44 @@
+{% extends "account/base.html" %}
+{% load static %}
+
+{% block title %} Chat application {% endblock %}
+
+
+{% block body %}
+
+
+
+
+{% endblock %}
+
+
+{% block script %} 
+
+<script> 
+
+var ws= new WebSocket('ws://127.0.0.1:8000/ws/sc/')
+
+ws.onopen = function(){
+  
+    console.log("Websocket connection open")
+
+}
+
+ws.onmessage = function(event){
+
+    console.log("Message Recieved", event)
+
+}
+
+
+ws.onclose = function(event){
+
+console.log("Chat socket closed", event)
+
+};
+
+
+</script>
+
+
+{% endblock %}

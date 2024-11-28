@@ -1,0 +1,88 @@
+body{
+    background-color: #f0f0f0;
+}
+
+.form-layout {
+
+    width: 500px !important;
+    border-radius: 20px;
+    background-color: rgb(233, 233, 183);
+}
+
+
+
+body {
+    background: rgb(255, 255, 255)
+}
+
+.form-control:focus {
+    box-shadow: none;
+    border-color: #BA68C8
+}
+
+.profile-button {
+    background: rgb(99, 39, 120);
+    box-shadow: none;
+    border: none
+}
+
+.profile-button:hover {
+    background: #682773
+}
+
+.profile-button:focus {
+    background: #682773;
+    box-shadow: none
+}
+
+.profile-button:active {
+    background: #682773;
+    box-shadow: none
+}
+
+.back:hover {
+    color: #682773;
+    cursor: pointer
+}
+
+.labels {
+    font-size: 11px
+}
+
+.add-experience:hover {
+    background: #BA68C8;
+    color: #fff;
+    cursor: pointer;
+    border: solid 1px #BA68C8
+}
+
+
+.centered-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; /* Full viewport height */
+}
+
+
+
+.inner-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+
+.centered-message {
+    display: flex;
+    justify-content: left; /* Centers horizontally */
+    align-items: left;     /* Centers vertically */
+    height: 50vh;           /* Full viewport height */
+    
+}
+
+.vertical-span {
+    display: block;
+    margin-bottom: 10px; /* Optional: Adds space between the spans */
+}

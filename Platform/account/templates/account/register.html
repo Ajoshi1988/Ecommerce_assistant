@@ -1,0 +1,48 @@
+{% extends "account/base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block title %} Register {% endblock %}
+
+{% block body %}
+
+<br>
+<div class="container bg-white shadow-md p-5 form-layout">
+
+    <h1>Register</h1>
+
+    <br>
+
+    <form method="POST" autocomplete="off">
+
+        {% csrf_token %}
+
+        {{RegisterForm|crispy}}
+
+        <br>
+
+        <input class="btn btn-success" type="submit" value="Register" />
+
+    </form>
+
+
+    <br>
+
+    <p>Already have an account? if so then
+        <a class="" href="{% url 'my-login' %}">Login</a>
+    </p>
+
+    <p>Back to admin
+        <a class="" href="/admin">Admin</a>
+    </p>
+
+
+</div>
+
+
+
+<br>
+
+
+
+{% endblock %}

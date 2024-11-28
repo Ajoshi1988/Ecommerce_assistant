@@ -1,0 +1,194 @@
+{% extends "account/base.html" %} {% load static %} {% block title %} Ecommerce
+Assistant {% endblock %} {% block body %}
+
+<div class="container-fluid h-100">
+  <div class="row justify-content-center h-100">
+    <div class="col-md-8 col-xl-6 chat">
+      <div class="card">
+        <div class="card-header msg_head">
+          <div class="d-flex bd-highlight">
+            <div class="img_cont">
+              <img
+                src="{% static 'images/ecom_bot.png' %}"
+                class="rounded-circle user_img"
+              />
+
+              <span class="online_icon"></span>
+            </div>
+            <div class="user_info">
+              <span>Ecommerce Assistant</span>
+              <p>Inquiries</p>
+            </div>
+          </div>
+        </div>
+        <div id="message_box" class="card-body msg_card_body"></div>
+
+        <div class="card-footer">
+          <form id="messageArea" class="input-group">
+            <input
+              type="text"
+              id="inp_text"
+              name="msg"
+              placeholder="Type your message..."
+              autocomplete="off"
+              class="form-control type_msg"
+              required
+            />
+            <div class="input-group-append">
+              <button type="submit" id="send" class="input-group-text send_btn">
+                <i class="fas fa-location-arrow"></i>
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %} {% block script %}
+
+<script>
+  document.getElementById("send").addEventListener("click", function () {
+    const input = document.getElementById("inp_text");
+    const message = input.value.trim();
+
+    const botload = `<p class="bot-loading">
+    
+                    <span class="loading-dots">.</span>
+                    <span class="loading-dots">.</span>
+                    <span class="loading-dots">.</span>
+                    </p>
+                        `;
+
+    if (message) {
+      const messageBox = document.getElementById("message_box");
+
+      // Create a wrapper div for the message and image
+      const messageWrapper = document.createElement("div");
+      messageWrapper.style.display = "flex";
+      messageWrapper.style.alignItems = "center";
+      messageWrapper.style.marginBottom = "10px";
+      messageWrapper.style.animation = "slide-in 0.5s ease-out";
+
+      // Create the image element
+      const img = document.createElement("img");
+      img.src = "{% static 'images/anime.jpg' %}"; // Replace with your image URL
+      img.alt = "User Avatar";
+      img.style.width = "40px";
+      img.style.height = "40px";
+      img.style.borderRadius = "50%";
+      img.style.marginRight = "10px";
+      img.style.marginBottom = "5px";
+
+      // Create the message text element
+      const messageText = document.createElement("div");
+      messageText.textContent = message;
+      messageText.style.backgroundColor = "#f1f1f1";
+      messageText.style.padding = "10px";
+      messageText.style.borderRadius = "10px";
+      messageText.style.color = "#333";
+
+      // Append the image and text to the wrapper
+      messageWrapper.appendChild(img);
+      messageWrapper.appendChild(messageText);
+
+      // Append the wrapper to the message box
+      messageBox.appendChild(messageWrapper);
+
+      // Clear the input field
+      input.value = "";
+
+      
+      
+      messageBox.insertAdjacentHTML('beforeend', botload);
+
+
+      //  Get the response from Assistant
+      $.ajax({
+        url: "{% url 'bot_response' %}",
+        type: "GET",
+
+        success: function (response) {
+          const botResponse = response.message;
+
+          //Bot Wrapper
+          const botWrapper = document.createElement("div");
+          botWrapper.style.display = "flex";
+          botWrapper.style.alignItems = "center";
+          botWrapper.style.marginBottom = "10px";
+          botWrapper.style.animation = "slide-in 1s ease-out";
+
+          // Create the image element
+          const botImg = document.createElement("img");
+          botImg.src = "{% static 'images/alexa.png' %}"; // Replace with your image URL
+          botImg.alt = "User Avatar";
+          botImg.style.width = "40px";
+          botImg.style.height = "40px";
+          botImg.style.borderRadius = "50%";
+          botImg.style.marginRight = "10px";
+
+          const botResponseText = document.createElement("div");
+          botResponseText.textContent = botResponse;
+          botResponseText.style.backgroundColor = "#f1f1f1";
+          botResponseText.style.padding = "10px";
+          botResponseText.style.borderRadius = "10px";
+          botResponseText.style.color = "#333";
+          botResponseText.style.marginRight = "10px";
+          botResponseText.style.marginTop = "20px";
+
+          botWrapper.appendChild(botResponseText);
+          botWrapper.appendChild(botImg);
+
+          const messageBox = document.getElementById("message_box");
+          messageBox.style.display = "flex";
+          messageBox.style.flexDirection = "column";
+          botWrapper.style.marginLeft = "auto";
+
+          //Append the botwrapper after a delay
+          setTimeout(function () {
+            messageBox.appendChild(botWrapper);
+            console.log("Request was successful!", message);
+            messageBox.scrollTop = messageBox.scrollHeight;
+          }, 2000);
+        },
+        error: function (error) {
+          console.log("Request Failed");
+        },
+      });
+
+      // Scroll to the bottom of the message box
+      messageBox.scrollTop = messageBox.scrollHeight;
+    }
+  });
+
+  // Add CSS for slide-in animation
+  const style = document.createElement("style");
+  style.innerHTML = `
+    @keyframes slide-in {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    .msg_card_body {
+      overflow-y: auto;
+      max-height: 400px;
+    }
+
+    
+  `;
+  document.head.appendChild(style);
+
+  //   Function for bottom scroll
+  function scrollToBottom() {
+    var messageBody = document.getElementById("message_box");
+    messageBody.scrollTop = messageBody.scrollHeight;
+  }
+</script>
+
+{% endblock %}
