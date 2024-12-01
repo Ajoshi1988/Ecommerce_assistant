@@ -19,7 +19,18 @@ urlpatterns = [
    path('virtual_assistant/chat_bot', views.ChatBot, name="chat_bot"),
 
    path('bot-response', views.bot_response, name='bot_response'),
+   
+   path('user-data', views.data_from_user, name='data_from_user'),
+   
+  
 
+  
+   
+   
+    
+    
+    
+   
    
    # path('save_modal', views.SaveModal, name="save_modal"),
    

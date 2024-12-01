@@ -1,0 +1,6 @@
+buyer_id,CPU,GPU,SSD,Monitor
+95c2207c-5cec-4277-b276-ad2837a14dbb,Intel Core i9-13900K @ $700,AMD Radeon RX 7900 XTX @ $740,Crucial P5 Plus (1TB) @ $70,ASUS ROG Swift PG259QN (24.5-inch) @ $700
+buyer_id,CPU,GPU,SSD,Monitor
+ab896d39-7748-46d6-a1e3-ecaf6b726411,AMD Ryzen 7 7800X3D @ $450,AMD Radeon RX 7900 XTX @ $740,Seagate FireCuda 530 (1TB) @ $90,LG UltraGear 27GN950-B (27-inch) @ $650
+buyer_id,CPU,GPU,SSD,Monitor
+e77e72ce-cd8c-4139-a2a8-a2019205553a,AMD Ryzen 9 7950X @ $500,NVIDIA GeForce RTX 4080 @ $340,Digital Black SN850X (1TB) @ $130,ASUS ROG Swift PG259QN (24.5-inch) @ $700

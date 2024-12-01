@@ -1,0 +1,485 @@
+{% extends "account/base.html" %} {% load static %} {% block title %} Ecommerce
+Assistant {% endblock %} {% block body %}
+<!-- <div class="container-fluid h-100"> -->
+
+<!-- <div class="row justify-content-center h-100">
+    <div class="col-md-8 col-xl-6 chat">
+      <div class="card">
+        <div class="card-header msg_head">
+          <div class="d-flex bd-highlight">
+            <div class="img_cont">
+              <img src="{% static 'images/ecom_bot.png' %}" class="rounded-circle user_img">
+              <span class="online_icon"></span>
+            </div>
+            <div class="user_info">
+              <span>Ecommerce Assistant</span>
+              <p>Inquiries</p>
+            </div>
+          </div>
+        </div>
+        <div id="message_box" class="card-body msg_card_body"></div>
+
+
+        <div class="card-footer">
+          <form id="messageArea" class="input-group">
+            <input type="text" id="inp_text" name="msg" placeholder="Type your message..." autocomplete="off"
+              class="form-control type_msg" required>
+            <div class="input-group-append">
+              <button type="submit" id="send" class="input-group-text send_btn">
+                <i class="fas fa-location-arrow"></i>
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div> -->
+<!-- </div>
+</div> -->
+ 
+
+
+<div class="button-load d-flex flex-column align-items-start gap-2">
+    <p class="text-primary fw-bold mb-3 fs-6">Press Continue to complete the transaction</p>
+    <div class="d-flex gap-2">
+        <button class="btn btn-success btn-sm order_pay fs-6" onclick="processor_click(this)">Continue</button>
+        <button class="btn btn-danger btn-sm order_pay fs-6" onclick="processor_click(this)">No</button>
+    </div>
+</div>
+
+{% endblock %} {% block script %}
+<script>
+
+    // Declare the global variables that can be accessed by any function
+
+    // Bot typing animation
+    const botload = `
+           
+          <p class="bot-loading">
+              <span class="loading-dots">.</span>
+              <span class="loading-dots">.</span>
+              <span class="loading-dots">.</span>
+          </p>
+  
+              `;
+
+    // All the butons from CPU, GPU, SSD and monitor
+    const button_processors = `
+           
+           <div class="button-load d-flex flex-column align-items-end gap-2">
+               <button class="btn btn-outline-light btn-sm rounded-pill CPU" onclick="processor_click(this)">
+                   <img src="{% static 'images/CPU.png' %}" alt="G-Pay Icon" style="height: 30px; margin-right: 10px;" />
+                   Intel Core i9-13900K @ $700
+               </button>
+               
+               <button class="btn btn-outline-light btn-sm rounded-pill CPU" onclick="processor_click(this)">
+                   <img src="{% static 'images/CPU.png' %}" alt="G-Pay Icon" style="height: 30px; margin-right: 10px;" />
+                   AMD Ryzen 9 7950X @ $500
+               </button>
+               
+               <button class="btn btn-outline-light btn-sm rounded-pill CPU" onclick="processor_click(this)">
+                   <img src="{% static 'images/CPU.png' %}" alt="G-Pay Icon" style="height: 30px; margin-right: 10px;" />
+                   Intel Core i7-13700K @ $900
+               </button>
+               
+               <button class="btn btn-outline-light btn-sm rounded-pill CPU" onclick="processor_click(this)">
+                   <img src="{% static 'images/CPU.png' %}" alt="G-Pay Icon" style="height: 30px; margin-right: 10px;" />
+                   AMD Ryzen 7 7800X3D @ $450
+               </button>
+           </div>
+           `;
+
+
+    const button_GPU = `
+        
+        <div class="button-load d-flex flex-column align-items-end gap-2">
+            <button class="btn btn-outline-light btn-sm rounded-pill GPU" onclick="processor_click(this)">
+                <img src="{% static 'images/GPU.jpg' %}" alt="G-Pay Icon" style="height: 30px; margin-right: 10px;" />
+                NVIDIA GeForce RTX 4090 @ $850
+            </button>
+            
+            <button class="btn btn-outline-light btn-sm rounded-pill GPU" onclick="processor_click(this)">
+                <img src="{% static 'images/GPU.jpg' %}" alt="G-Pay Icon" style="height: 30px; margin-right: 10px;" />
+                AMD Radeon RX 7900 XTX @ $740
+            </button>
+            
+            <button class="btn btn-outline-light btn-sm rounded-pill GPU" onclick="processor_click(this)">
+                <img src="{% static 'images/GPU.jpg' %}" alt="G-Pay Icon" style="height: 30px; margin-right: 10px;" />
+                NVIDIA GeForce RTX 4080 @ $340
+            </button>
+            
+            <button class="btn btn-outline-light btn-sm rounded-pill GPU" onclick="processor_click(this)">
+                <img src="{% static 'images/GPU.jpg' %}" alt="G-Pay Icon" style="height: 30px; margin-right: 10px;" />
+                AMD Radeon RX 7800 XT @ $560
+            </button>
+        </div>
+        `;
+
+    //  Loading wrappers
+
+    const loadWrapper = document.createElement("div");
+    loadWrapper.style.display = "flex";
+    loadWrapper.style.alignItems = "center";
+    loadWrapper.style.marginBottom = "10px";
+    loadWrapper.style.marginLeft = "5x";
+    loadWrapper.innerHTML = botload;
+
+    //Default button wrapper
+    const buttonWrapper = document.createElement("div");
+    buttonWrapper.style.display = "flex";
+    buttonWrapper.style.alignItems = "center";
+    buttonWrapper.style.marginBottom = "10px";
+    buttonWrapper.style.marginLeft = "5x";
+    buttonWrapper.innerHTML = button_processors;
+    buttonWrapper.style.animation = "slide-in 1s ease-out";
+    let button_wrapper_flag = 0;
+
+
+
+
+
+
+    document.getElementById("send").addEventListener("click", function () {
+        const input = document.getElementById("inp_text");
+        const message = input.value.trim();
+
+
+        if (message) {
+
+
+
+            //Bot Wrapper
+            const botWrapper = document.createElement("div");
+            botWrapper.style.display = "flex";
+            botWrapper.style.alignItems = "center";
+            botWrapper.style.marginBottom = "10px";
+            botWrapper.style.animation = "slide-in 1s ease-out";
+
+
+            // Create the user image element
+            const img = document.createElement("img");
+            img.src = "{% static 'images/anime.jpg' %}"; // Replace with your image URL
+            img.alt = "User Avatar";
+            img.style.width = "40px";
+            img.style.height = "40px";
+            img.style.borderRadius = "50%";
+            img.style.marginRight = "10px";
+            img.style.marginBottom = "5px";
+
+
+            // Create the bot image element
+            const botImg = document.createElement("img");
+            botImg.src = "{% static 'images/alexa.png' %}"; // Replace with your image URL
+            botImg.alt = "User Avatar";
+            botImg.style.width = "40px";
+            botImg.style.height = "40px";
+            botImg.style.borderRadius = "50%";
+            botImg.style.marginRight = "10px";
+
+
+            //  message box wrapper
+
+            const messageBox = document.getElementById("message_box");
+            const messageWrapper = document.createElement("div");
+            messageWrapper.style.display = "flex";
+            messageWrapper.style.alignItems = "center";
+            messageWrapper.style.marginBottom = "10px";
+            messageWrapper.style.animation = "slide-in 0.5s ease-out";
+
+
+
+            // Create the message text element
+            const messageText = document.createElement("div");
+            messageText.textContent = message;
+            messageText.style.backgroundColor = "#f1f1f1";
+            messageText.style.padding = "10px";
+            messageText.style.borderRadius = "10px";
+            messageText.style.color = "#333";
+
+            // Append the image and text to the wrapper
+            messageWrapper.appendChild(img);
+            messageWrapper.appendChild(messageText);
+
+            // Append the wrapper to the message box
+            messageBox.appendChild(messageWrapper);
+
+            // Clear the input field
+            input.value = "";
+
+            // Loading the bot typing animation
+            messageBox.style.display = "flex";
+            messageBox.style.flexDirection = "column";
+
+
+            messageBox.appendChild(loadWrapper);
+
+
+            //  Get the response from Assistant
+            $.ajax({
+                url: "{% url 'bot_response' %}",
+                type: "GET",
+
+                data: {
+                    user_query: message,
+                },
+
+                success: function (response) {
+
+
+                    const botResponse = response.message;
+                    const botResponseText = document.createElement("div");
+                    botResponseText.style.backgroundColor = "#fbceb1";
+                    botResponseText.style.padding = "10px";
+                    botResponseText.style.borderRadius = "10px";
+                    botResponseText.style.color = "#333";
+                    botResponseText.style.marginRight = "10px";
+                    botResponseText.style.marginTop = "20px";
+
+
+
+
+                    if (response.html == 'no') {
+                        botResponseText.textContent = botResponse;
+
+
+                    } else if (response.html == 'yes') {
+
+                        botResponseText.innerHTML = botResponse;
+
+
+                    }
+
+                    else if (response.html == 'assemble_chain') {
+
+                        botResponseText.textContent = botResponse;
+                        button_wrapper_flag = 1;
+
+                    }
+
+
+                    botWrapper.appendChild(botResponseText);
+                    botWrapper.appendChild(botImg);
+
+
+
+                    // const messageBox = document.getElementById("message_box");
+                    messageBox.style.display = "flex";
+                    messageBox.style.flexDirection = "column";
+
+                    botWrapper.style.marginLeft = "auto";
+
+
+
+                    //Append the botwrapper after a delay
+                    setTimeout(function () {
+
+                        if (messageBox.contains(loadWrapper)) {
+                            messageBox.removeChild(loadWrapper);
+                        }
+
+                        messageBox.appendChild(botWrapper);
+
+                        setTimeout(function () {
+
+                            if (button_wrapper_flag) {
+
+                                messageBox.appendChild(buttonWrapper);
+                                button_wrapper_flag = 0;
+                                messageBox.scrollTop = messageBox.scrollHeight;
+
+
+                            }
+
+                        }, 1000);
+
+
+                        console.log("Request was successful!", message);
+                        messageBox.scrollTop = messageBox.scrollHeight;
+                    }, 2000);
+
+
+
+
+
+
+
+
+
+                },
+                error: function (error) {
+                    console.log("Request Failed");
+                },
+            });
+
+            // Scroll to the bottom of the message box
+            messageBox.scrollTop = messageBox.scrollHeight;
+        }
+    });
+
+    // Add CSS for slide-in animation
+    const style = document.createElement("style");
+    style.innerHTML = `
+    @keyframes slide-in {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+    .msg_card_body {
+      overflow-y: auto;
+      max-height: 400px;
+    }
+
+    
+  `;
+    document.head.appendChild(style);
+
+
+    //   Function for bottom scroll
+    function scrollToBottom() {
+        var messageBody = document.getElementById("message_box");
+        messageBody.scrollTop = messageBody.scrollHeight;
+    }
+
+
+    // Function to get processor
+    function processor_click(button) {
+
+        const buttonClass = button.className;
+        const buttonText = button.textContent.trim();
+
+        console.log("Button Class:", buttonClass);
+        console.log("Button Text:", buttonText);
+
+
+        // Send the data to backend
+        $.ajax({
+            url: "{% url 'data_from_user' %}",
+            type: "GET",
+            data: {
+                button_class: buttonClass, // Pass the message variable as data to the server
+                button_text: buttonText
+            },
+            success: function (response) {
+
+
+
+                const loadWrapper = document.createElement("div");
+                loadWrapper.style.display = "flex";
+                loadWrapper.style.alignItems = "center";
+                loadWrapper.style.marginBottom = "10px";
+                loadWrapper.style.marginLeft = "5x";
+                loadWrapper.innerHTML = botload;
+
+
+
+
+
+                messageBox.style.display = "flex";
+                messageBox.style.flexDirection = "column";
+
+
+                messageBox.appendChild(loadWrapper);
+
+
+                const botResponse = response.message;
+                //Bot Wrapper
+                const botWrapper = document.createElement("div");
+                botWrapper.style.display = "flex";
+                botWrapper.style.alignItems = "center";
+                botWrapper.style.marginBottom = "10px";
+                botWrapper.style.animation = "slide-in 1s ease-out";
+
+
+                // Create the image element
+                const botImg = document.createElement("img");
+                botImg.src = "{% static 'images/alexa.png' %}"; // Replace with your image URL
+                botImg.alt = "User Avatar";
+                botImg.style.width = "40px";
+                botImg.style.height = "40px";
+                botImg.style.borderRadius = "50%";
+                botImg.style.marginRight = "10px";
+
+                const botResponseText = document.createElement("div");
+                botResponseText.textContent = botResponse;
+                botResponseText.style.backgroundColor = "#fbceb1";
+                botResponseText.style.padding = "10px";
+                botResponseText.style.borderRadius = "10px";
+                botResponseText.style.color = "#333";
+                botResponseText.style.marginRight = "10px";
+                botResponseText.style.marginTop = "20px";
+
+                botWrapper.appendChild(botResponseText);
+                botWrapper.appendChild(botImg);
+
+
+                const messageBox = document.getElementById("message_box");
+                messageBox.style.display = "flex";
+                messageBox.style.flexDirection = "column";
+                botWrapper.style.marginLeft = "auto";
+
+
+                setTimeout(function () {
+
+                    if (messageBox.contains(loadWrapper)) {
+                        messageBox.removeChild(loadWrapper);
+                    }
+
+                    messageBox.appendChild(botWrapper);
+
+
+
+
+                    console.log("Request was successful!", message);
+                    messageBox.scrollTop = messageBox.scrollHeight;
+                }, 2000);
+
+
+
+
+
+
+
+
+                const buttonWrapper = document.createElement("div");
+                buttonWrapper.style.display = "flex";
+                buttonWrapper.style.alignItems = "center";
+                buttonWrapper.style.marginBottom = "10px";
+                buttonWrapper.style.marginLeft = "5x";
+                buttonWrapper.style.animation = "slide-in 1s ease-out";
+
+                // Decide which buttons to load
+                if (response.next == 'GPU') {
+
+
+                    buttonWrapper.innerHTML = button_GPU;
+
+
+
+
+                }
+
+
+
+
+
+            },
+
+            error: function (xhr, status, error) {
+                console.error("Error in AJAX request:", error);
+
+            },
+        });
+
+
+
+    }
+
+
+
+
+</script>
+{% endblock %}
